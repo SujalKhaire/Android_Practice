@@ -23,9 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujalkhaire.androidpractice.ui.theme.AndroidpracticeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val viewModel:NoteViewModel = viewModel()
-                   AppNavigation(viewModel = viewModel)
+                   AppNavigation()
                 }
             }
         }
@@ -46,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun addNoteScreen(title:String,content:String,ontitleChange:(String)->Unit,oncontentChange:(String)->Unit,charlength:String){
+fun addNoteScreen(title:String,content:String,ontitleChange:(String)->Unit,oncontentChange:(String)->Unit,charlength:String,viewModel: NoteViewModel =  hiltViewModel()){
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -61,15 +64,9 @@ fun addNoteScreen(title:String,content:String,ontitleChange:(String)->Unit,oncon
 
         Spacer(modifier = Modifier.height(16.dp))
         Row (modifier = Modifier.fillMaxWidth()){
-            Button(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
-                Text(text = "Submit Title")
+            Button(onClick = { viewModel.add(title,content) }, modifier = Modifier.weight(1f)) {
+                Text(text = "Submit Note")
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = { /*TODO*/ },modifier  =Modifier.weight(1f)) {
-                Text(text = "Submit Content")
-            }
-
-
         }
     }
 }
@@ -79,5 +76,5 @@ fun addNoteScreen(title:String,content:String,ontitleChange:(String)->Unit,oncon
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    addNoteScreen(title = "", content = "", ontitleChange = {}, oncontentChange = {},"1")
+
 }

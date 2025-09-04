@@ -3,7 +3,7 @@ package com.sujalkhaire.androidpractice
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "notes_table")
+@Entity(tableName = "notes")
 data class Note(
     @PrimaryKey(autoGenerate = true)
     val id:Int = 0,

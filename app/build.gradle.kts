@@ -1,10 +1,10 @@
+
 plugins {
-    id("com.android.application") // ✅ must be FIRST
+    id("com.android.application")
     id("org.jetbrains.kotlin.android")
-     // ✅ after android
-    id("org.jetbrains.kotlin.kapt")
-
-
+    id("com.google.dagger.hilt.android") // Hilt plugin
+    id("com.google.devtools.ksp") // KSP plugin (replaces kapt for supported libraries)
+// Firebase plugin
 }
 
 android {
@@ -19,6 +19,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument("runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder")
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -56,9 +57,6 @@ android {
 dependencies {
     // --- Compose BOM (latest stable) ---
     implementation(platform("androidx.compose:compose-bom:2024.02.01"))
-
-    implementation ("com.google.accompanist:accompanist-swiperefresh:0.36.0")
-
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material")
@@ -67,10 +65,10 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Compose testing
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-
-
 
     // --- Firebase BoM (no versions for individual Firebase libs!) ---
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -87,19 +85,19 @@ dependencies {
     // --- Razorpay ---
     implementation("com.razorpay:checkout:1.6.33")
 
-    // --- Room (with KAPT) ---
+    // --- Room (with KSP) ---
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1") // Use KSP for Room
 
-
-    // --- Coroutines (only once, with correct versions) ---
+    // --- Coroutines ---
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // --- Hilt (Dependency Injection) ---
-    implementation("com.google.dagger:hilt-android:2.50")
-
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1") // Use KSP for Hilt
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // --- Navigation ---
     implementation("androidx.navigation:navigation-compose:2.7.5")
@@ -120,11 +118,19 @@ dependencies {
     // --- Android Core KTX ---
     implementation("androidx.core:core-ktx:1.12.0")
 
-    implementation ("com.google.android.play:app-update-ktx:2.1.0")
+    // --- App Update ---
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
+    // --- Accompanist ---
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
 
     // --- Testing ---
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+    // Hilt testing
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 }
